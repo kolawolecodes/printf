@@ -1,48 +1,51 @@
 #include "main.h"
 
 /**
- * _printf - produces output according to a format
- * @format: format string containing the characters and the specifiers
- * Description: this function will call the get_print() function that will
- * determine which printing function to call depending on the conversion
- * specifiers contained into fmt
- * Return: length of the formatted output string
+ * _printf - produces output according to output
+ * @format: argument
+ * Return: res
  */
+
 int _printf(const char *format, ...)
 {
-    int (*pfunc)(va_list, flags_t *);
-    const char *p;
-    va_list arguments;
-    flags_t flags = {0, 0, 0};
+	/*declare variable and initialize struct to be used*/
+	int i, sum = 0, count = 0;
+	va_list arg;
+	/* initialize arg with format*/
+	va_start(arg, format);
+	if (format == NULL)
+		return (-1);
+	for (i = 0; format[i] != '\0'; i++)
+	{
+		if (format[i] != '%')
+		{/*it is a normal character so print*/
+			_putchar(format[i]);
+			sum++;
+			continue;
+		}
+		if (format[i + 1] == '%')
+		{/*means it's %% so it should print %*/
+			_putchar('%');
+			sum++;
+			i++;
+			continue;
+		}
+		while (format[i + 1] == ' ')
+			i++;
+		if (format[i + 1] == '\0')
+			return (-1);
 
-    register int count = 0;
-
-    va_start(arguments, format);
-    if (!format || (format[0] == '%' && !format[1]))
-        return (-1);
-    if (format[0] == '%' && format[1] == ' ' && !format[2])
-        return (-1);
-    for (p = format; *p; p++)
-    {
-        if (*p == '%')
-        {
-            p++;
-            if (*p == '%')
-            {
-                count += _putchar('%');
-                continue;
-            }
-            while (get_flag(*p, &flags))
-                p++;
-            pfunc = get_print(*p);
-            count += (pfunc)
-                         ? pfunc(arguments, &flags)
-                         : _printf("%%%c", *p);
-        }
-        else
-            count += _putchar(*p);
-    }
-    _putchar(-1);
-    va_end(arguments);
-    return (count);
+		count = count_spec(format[i + 1], arg);/*the count of arg*/
+		if (count == -1 || count != 0)
+			i++;
+		if (count > 0)/*count_spec used and the specifier is correct*/
+			sum += count;
+		if (count == 0)/*invalid specifier, treat as normal character*/
+		{
+			_putchar('%');
+			sum++;
+		}
+	}
+	va_end(arg);
+	return (sum);
 }
