@@ -1,77 +1,48 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef _MAIN_H_
+#define _MAIN_H_
 
-#include <stdlib.h>
 #include <stdarg.h>
-
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdint.h>
 /**
- * struct flags - struct containing flags to "turn on"
- * when a flag specifier is passed to _printf()
- * @plus: flag for the '+' character
- * @space: flag for the ' ' character
- * @hash: flag for the '#' character
+ * struct ch - struct ch
+ * @str: pointer to string
+ * @f: funtion pointer
  */
-typedef struct flags
+typedef struct ch
 {
-    int plus;
-    int space;
-    int hash;
-} flags_t;
+	char *str;
+	int (*f)(va_list);
+} chr_st;
+/*from My struct array func*/
+int count_spec(char ch, va_list arg);
 
-/**
- * struct printHandler - struct to choose the right function depending
- * on the format specifier passed to _printf()
- * @c: format specifier
- * @f: pointer to the correct printing function
- */
-typedef struct printHandler
-{
-    char c;
-    int (*f)(va_list ap, flags_t *f);
-} ph;
-
-/* print_nums */
-int print_int(va_list l, flags_t *f);
-void print_number(int n);
-int print_unsigned(va_list l, flags_t *f);
-int count_digit(int i);
-
-/* print_bases */
-int print_hex(va_list l, flags_t *f);
-int print_hex_big(va_list l, flags_t *f);
-int print_binary(va_list l, flags_t *f);
-int print_octal(va_list l, flags_t *f);
-
-/* converter */
-char *convert(unsigned long int num, int base, int lowercase);
-
-/* _printf */
-int _printf(const char *format, ...);
-
-/* get_print */
-int (*get_print(char s))(va_list, flags_t *);
-
-/* get_flag */
-int get_flag(char s, flags_t *f);
-
-/* print_alpha */
-int print_string(va_list l, flags_t *f);
-int print_char(va_list l, flags_t *f);
-
-/* write_funcs */
 int _putchar(char c);
-int _puts(char *str);
+int _printf(const char *format, ...);
+/*fuctions can be found in functions.c*/
+int _strlen(char *c);
+int print_hexa(unsigned int num, int form);
+void _puts(char *str);
+char *rot13(char *s);
 
-/* print_custom */
-int print_rot13(va_list l, flags_t *f);
-int print_rev(va_list l, flags_t *f);
-int print_bigS(va_list l, flags_t *f);
+/*This are from  specifer functions.c */
+int use_c(va_list arg);
+int use_s(va_list arg);
+int use_i(va_list arg);
+int use_d(va_list arg);
+int use_u(va_list arg);
+int use_o(va_list arg);
+/*from binary.c */
+int use_b(va_list arg);
+/*These from more_functions.c */
+int use_hex(va_list arg);
+int use_HEX(va_list arg);
+int use_S(va_list arg);
+int use_p(va_list arg);
+int use_r(va_list arg);
 
-/* print_address */
-int print_address(va_list l, flags_t *f);
-
-/* print_percent */
-int print_percent(va_list l, flags_t *f);
-
+/*From rot_13.c*/
+int use_R(va_list arg);
 
 #endif
